@@ -159,6 +159,29 @@ def movePlayer(x,y,moveDir):
         return (x,y)   #return the same location they are in since no move
 
 
+#key move functions
+def move_down():
+    global currX, currY
+    currX, currY = movePlayer(currX, currY, "d")
+
+def move_up():
+    global currX, currY
+    currX, currY = movePlayer(currX, currY, "u")
+
+def move_right():
+    global currX, currY
+    currX, currY = movePlayer(currX, currY, "r")
+
+def move_left():
+    global currX, currY
+    currX, currY = movePlayer(currX, currY, "l")
+
+
+listen()
+onkey(move_up, "Up")
+onkey(move_down, "Down")
+onkey(move_left, "Left")
+onkey(move_right, "Right")
 
 screen = turtle.Screen()
 screen.title("My window")
@@ -172,8 +195,8 @@ screen.update()
  
 #Forever just let the player move around the map on the path
 while True:
-    moveDir = input("Enter direction (u,d,l,r): ")
-    currX, currY = movePlayer(currX, currY, moveDir)
+    #moveDir = input("Enter direction (u,d,l,r): ")
+    #currX, currY = movePlayer(currX, currY, moveDir)
     #drawMap(currX, currY)
     drawGraphicsMap(currX, currY)
    
