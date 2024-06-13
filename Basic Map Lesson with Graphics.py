@@ -1,4 +1,11 @@
 
+#Tryting to update the way the map is drawn. Instead of just drawing the
+#map starting at the top left, I want to instead draw the map starting at the 
+#user location and then moving outward by the visibilty amount, while
+#not allowing peering through walls
+#For now, I will create a new function while leaving the old "working" one.
+#The new one will be called drawGraphicsMapUserView()
+
 import turtle
 from turtle import *
 
@@ -120,7 +127,140 @@ def drawGraphicsMap(currX, currY):
     screen.update()
     return
 
+
+#drawGraphicMapUserView - draws the map starting from the user and moving outward
+#in all directions as far as the visibiity setting, while not allowing
+#seeing through walls
+def drawGraphicsMapUserView(currX, currY):
+    #logic -
+    #start at the player's current square (currX, currY)
+    #draw up to visibility point, stopping if wall hit
+    #draw down to visibility point, stopping if wall hit
+    #draw left to visibility point, stopping if wall  hit
+    #draw right to visibility point, stopping if wall hit
+    #what about diagonals??? - worry about that after doing the above
+
+    #draw the current player's sqaure
+    sq.penup()
+    sq.setx(currX*sideLength-mapOffset)
+    sq.sety(currY*-sideLength+mapOffset)
+    sq.fillcolor("blue") #blue is player square color
+    drawSquare(sideLength)
+
+    #draw up to visibility point, stopping if wall hit
+    col = currX; row = currY
+    for x in range (1, VISDIST+1):
+        sq.penup()
+        sq.setx(col*sideLength-mapOffset)
+        sq.sety((row-x)*-sideLength+mapOffset)
+        if Map[row-x][col]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row-x][col]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
     
+    #draw down to visibility point, stopping if wall hit
+    col = currX; row = currY
+    for x in range (1, VISDIST+1):
+        sq.penup()
+        sq.setx(col*sideLength-mapOffset)
+        sq.sety((row+x)*-sideLength+mapOffset)
+        if Map[row+x][col]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row+x][col]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+
+    #draw left to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST+1):
+        sq.penup()
+        sq.setx((col-x)*sideLength-mapOffset)
+        sq.sety(row*-sideLength+mapOffset)
+        if Map[row][col-x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row][col-x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+
+    #draw right to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST+1):
+        sq.penup()
+        sq.setx((col+x)*sideLength-mapOffset)
+        sq.sety(row*-sideLength+mapOffset)
+        if Map[row][col+x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row][col+x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+    
+    #draw up+right diag to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST):
+        sq.penup()
+        sq.setx((col+x)*sideLength-mapOffset)
+        sq.sety((row-x)*-sideLength+mapOffset)
+        if Map[row-x][col+x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row-x][col+x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+
+    #draw down+right diag to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST):
+        sq.penup()
+        sq.setx((col+x)*sideLength-mapOffset)
+        sq.sety((row+x)*-sideLength+mapOffset)
+        if Map[row+x][col+x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row+x][col+x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+
+    #draw down+left diag to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST):
+        sq.penup()
+        sq.setx((col-x)*sideLength-mapOffset)
+        sq.sety((row+x)*-sideLength+mapOffset)
+        if Map[row+x][col-x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row+x][col-x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+        
+    #draw up+left diag to visibility point, stopping if wall  hit
+    col = currX; row = currY
+    for x in range (1, VISDIST):
+        sq.penup()
+        sq.setx((col-x)*sideLength-mapOffset)
+        sq.sety((row-x)*-sideLength+mapOffset)
+        if Map[row-x][col-x]==1:
+            sq.fillcolor("brown")
+            drawSquare(sideLength)
+            break  #no more viewing past this point allowed - can't see through walls
+        elif Map[row-x][col-x]==0:
+            sq.fillcolor("yellow")
+            drawSquare(sideLength)
+
+    screen.update()
+    return    
     
 
 #Define our function that will move the player
@@ -190,7 +330,8 @@ screen.tracer(0)
 
 #draw the map the first time before asking for a move
 #drawMap(currX, currY)
-drawGraphicsMap(currX, currY)
+#drawGraphicsMap(currX, currY)
+drawGraphicsMapUserView(currX, currY)
 screen.update()
  
 #Forever just let the player move around the map on the path
@@ -198,7 +339,8 @@ while True:
     #moveDir = input("Enter direction (u,d,l,r): ")
     #currX, currY = movePlayer(currX, currY, moveDir)
     #drawMap(currX, currY)
-    drawGraphicsMap(currX, currY)
+    #drawGraphicsMap(currX, currY)
+    drawGraphicsMapUserView(currX, currY)
    
    
     
